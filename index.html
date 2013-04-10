@@ -1,11 +1,12 @@
 <!doctype html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
 
   <title>UT Econ Experiment</title>
   <meta name="description" content="My Parse App">
   <meta name="viewport" content="width=device-width">
-  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/styles.css">
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
   <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.3.min.js"></script>
@@ -13,38 +14,45 @@
 </head>
 
 <body>
-  <div id="flash"><span id="flash_error"></span></div>
-  
-  <div id="header">
-    <div id="timer"></div>
-    <div id="computerSetup">
-      <h1>Which computer is this using?</h1>
-      <div id="computerForm">
-        <input type="text" id="computerInput" size="5" />
-        <input type="button" id="submitComputer" class="UThidden" value="Set Computer" />
-      </div>
-      <div id="ipInfo">IP:
-        <span id="ipLoading">loading... </span>
-        <span id="ipDone"></span>
-      </div>
-    </div>
-    <div id="computerInfo" class="UThidden">
-      <h1></h1>
-    </div>
-  </div>
+  <div class="container"> 
 
-  <div id="content" class="UThidden">
-    <div id="results">
-      Correctly solved: <span id="results_recaptchas">0</span><br />
-      Tokens earned: <span id="results_tokens">0</span>
+    <div id="header" class="hero-unit">
+      <div id="computerSetup">
+        <h1>Which computer am I?</h1>
+        <div id="computerForm" class="form-inline">
+          <input type="text" id="computerInput" size="5" />
+          <input type="button" class="btn btn-info" id="submitComputer" value="Set Computer" />
+        </div>
+        <div id="ipInfo">Current IP:
+          <span id="ipLoading">loading... </span>
+          <span id="ipDone"></span>
+        </div>
+      </div>
+      <div id="computerInfo">
+        <h1></h1>
+      </div>
     </div>
 
-    <form id="recaptcha_form" action="" method="POST">
-    <div id="recaptcha_div">
+    <div id="content" class="row">
+      <div id="results" class="span4">
+        <p>Correctly solved: <span id="results_recaptchas">0</span></p>
+        <p>Tokens earned: <span id="results_tokens">0</span></p>
+      </div>
+
+      <div class="span8">
+        <form id="recaptcha_form" action="" method="POST">
+          <div id="recaptcha_div">
+          </div>
+        </form>
+
+        <input type="button" id="submitButton" class="btn btn-info btn-large" value="Gotcha, you Captcha" />
+        <img src="css/animated-spinner.gif" />
+
+        <div id="flash_error" class="alert alert-error"></div>
+      </div>
     </div>
     </form>
 
-    <input type="button" id="submitButton" value="SUBMIT" />
   </div>
 
   <script type="text/javascript" src="recaptcha.js"></script>

@@ -1,37 +1,40 @@
 body {
-    background: #eee;
-    text-align: center;
 }
 
-.UThidden {
+#flash_error {
   display: none;
-}
-
-#flash {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  padding: 10px;
-  display: none;
-}
-#flash #flash_error {
-  margin-right: auto;
-  margin-left: auto;
-  background-color: red;
-  color: white;
-  padding: 10px 20px;
 }
 
 #header {
-  height: 150px;
-  background-color: #CCC;
-  margin: 10px;
+  text-align: center;
+}
+#ipInfo {
+  font-size: 24.5px;
+  font-weight: bold;
+}
+#ipInfo span {
+  font-weight: normal;
 }
 
+#computerInfo, #submitComputer, #content, #content img {
+  display: none;
+}
 #computerInfo {
   font-size: 14pt;
 }
+#computerForm {
+  margin: 1em 0;
+}
 #computerIdentifier {
   font-weight: bold;
+}
+#results {
+  font-size: 24.5px;
+}
+#results span {
+  font-weight: bold;
+}
+.alert {
+  margin-top: 1em;
 }
 

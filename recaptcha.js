@@ -67,6 +67,8 @@ UT = function() {
   var submitCaptcha = function() {
     var Captcha = Parse.Object.extend("Captcha");
     var captcha = new Captcha();
+    var spinner = $('#submitButton').next();
+    spinner.show();
     captcha.save({
         uuid: uuid,
         identifier: identifier,
@@ -75,13 +77,14 @@ UT = function() {
         response: Recaptcha.get_response()
       }, {
       success: function(object) {
+        spinner.hide();
         Recaptcha.destroy();
         successCount++;
         setupRecaptcha();
       },
       error: function(object, error) {
-        $('#flash_error').text(error.message);
-        $('#flash').fadeIn().delay(3000).fadeOut();
+        spinner.hide();
+        $('#flash_error').text(error.message).fadeIn().delay(3000).fadeOut();
         Recaptcha.destroy();
         setupRecaptcha();
       },
