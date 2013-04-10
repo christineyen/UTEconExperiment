@@ -2,6 +2,7 @@
 // https://developers.google.com/recaptcha/docs/customization
 
 window.UT = {};
+
 UT = function() {
   Parse.initialize("4mgZKN5Hnb8S6xNvEfSDRC062ka8qZIygSjDgpuI", "nXUyDw8w7wpS7Sx11UTYi4e4L5OCsm3Y3D3VvHov");
 
@@ -52,7 +53,7 @@ UT = function() {
   // When a user clicks the "Set Computer" button, store that information and
   // begin the reCAPTCHA process.
 
-  $('input#submitComputer').click(function() {
+  var submitComputerInfo = function() {
     identifier = $('input#computerInput').attr('value');
     if (identifier.length > 0) {
       $('#computerSetup').hide();
@@ -61,22 +62,9 @@ UT = function() {
       $('#content').show();
       setupRecaptcha();
     }
-  });
-
-  var submitSuccess = function(object) {
-    Recaptcha.destroy();
-    successCount++;
-    setupRecaptcha();
   };
 
-  var submitError = function(object, error) {
-    $('#flash_error').text(error.message);
-    $('#flash').fadeIn().delay(3000).fadeOut();
-    Recaptcha.destroy();
-    setupRecaptcha();
-  };
-
-  $('input#submitButton').click(function() {
+  var submitCaptcha = function() {
     var Captcha = Parse.Object.extend("Captcha");
     var captcha = new Captcha();
     captcha.save({
@@ -86,18 +74,28 @@ UT = function() {
         challenge: Recaptcha.get_challenge(),
         response: Recaptcha.get_response()
       }, {
-        success: submitSuccess,
-        error: submitError
-      });
+      success: function(object) {
+        Recaptcha.destroy();
+        successCount++;
+        setupRecaptcha();
+      },
+      error: function(object, error) {
+        $('#flash_error').text(error.message);
+        $('#flash').fadeIn().delay(3000).fadeOut();
+        Recaptcha.destroy();
+        setupRecaptcha();
+      },
+    });
     return false;
-  });
+  };
 
-  // could later wrap this in an init() if we have other things we want to do
-  // after initialization
-
+  // Kick off IP resolving + revealing of necessary components
   init();
 
   // No public members
-  return { }
+  return {
+    submitComputerInfo: submitComputerInfo,
+    submitCaptcha: submitCaptcha,
+  }
 }();
 

@@ -16,6 +16,7 @@
   <div id="flash"><span id="flash_error"></span></div>
   
   <div id="header">
+    <div id="timer"></div>
     <div id="computerSetup">
       <h1>Which computer is this using?</h1>
       <div id="computerForm">
@@ -45,6 +46,10 @@
   </div>
 
   <script type="text/javascript" src="recaptcha.js"></script>
+  <script type="text/javascript">
+    $('input#submitComputer').click(UT.submitComputerInfo);
+    $('input#submitButton').click(UT.submitCaptcha);
+  </script>
 </body>
 
 </html>
