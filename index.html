@@ -14,17 +14,33 @@
 
 <body>
   
-  <div id="main">
-    <h1>You're ready to use Parse!</h1>
+  <div id="header">
+    <div id="computerSetup">
+      <h1>Which computer is this using?</h1>
+      <div id="computerForm">
+        <input type="text" id="computerInput" size="5" />
+        <input type="button" id="submitComputer" class="UThidden" value="Set Computer" />
+      </div>
+      <div id="ipInfo">IP:
+        <span id="ipLoading">loading... </span>
+        <span id="ipDone"></span>
+      </div>
+    </div>
+    <div id="computerInfo" class="UThidden">
+      <h1></h1>
+    </div>
   </div>
 
-  <div id="num_recaptchas">
+  <div id="content" class="UThidden">
+    <div id="num_recaptchas">
+    </div>
+
+    <div id="recaptcha_div">
+    </div>
+
+    <input type="button" id="submitButton" value="SUBMIT" />
   </div>
 
-  <div id="recaptcha_div">
-  </div>
-
-  <input type="button" id="submitButton" value="SUBMIT" />
   <script type="text/javascript" src="recaptcha.js"></script>
 </body>
 

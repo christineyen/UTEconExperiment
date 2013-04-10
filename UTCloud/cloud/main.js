@@ -18,7 +18,7 @@ Parse.Cloud.beforeSave("Captcha", function(request, response) {
     url: 'http://www.google.com/recaptcha/api/verify',
     params: {
       privatekey: '6LcNpt8SAAAAAC15LTAPRznY5rmUBzmCpmjEMgAa',
-      remoteip: '24.130.138.138',
+      remoteip: request.object.get('ip'),
       challenge: request.object.get('challenge'),
       response: request.object.get('response')
     },
