@@ -39,14 +39,17 @@
       Tokens earned: <span id="results_tokens">0</span>
     </div>
 
+    <form id="recaptcha_form" action="" method="POST">
     <div id="recaptcha_div">
     </div>
+    </form>
 
     <input type="button" id="submitButton" value="SUBMIT" />
   </div>
 
   <script type="text/javascript" src="recaptcha.js"></script>
   <script type="text/javascript">
+    $('form#recaptcha_form').submit(UT.submitCaptcha);
     $('input#submitComputer').click(UT.submitComputerInfo);
     $('input#submitButton').click(UT.submitCaptcha);
   </script>
