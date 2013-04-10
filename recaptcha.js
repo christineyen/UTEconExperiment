@@ -1,3 +1,6 @@
+// Customizing the look and feel:
+// https://developers.google.com/recaptcha/docs/customization
+
 window.UT = {};
 UT = function() {
   Parse.initialize("4mgZKN5Hnb8S6xNvEfSDRC062ka8qZIygSjDgpuI", "nXUyDw8w7wpS7Sx11UTYi4e4L5OCsm3Y3D3VvHov");
@@ -18,8 +21,9 @@ UT = function() {
     setupRecaptcha();
   };
 
-  var submitError = function(error) {
-    console.log('error! ' + error);
+  var submitError = function(object, error) {
+    // console.log(error.message);
+    Recaptcha.destroy();
   };
 
   $('input#submitButton').click(function() {
