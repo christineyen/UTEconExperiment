@@ -1,0 +1,11 @@
+{
+    "applications": {
+        "UTEcon": {
+            "applicationId": "4mgZKN5Hnb8S6xNvEfSDRC062ka8qZIygSjDgpuI", 
+            "masterKey": "epQwJiQibvWZ4eFp9V8YqbrKeqya54zd2IKhKncb"
+        }, 
+        "_default": {
+            "link": "UTEcon"
+        }
+    }
+}
