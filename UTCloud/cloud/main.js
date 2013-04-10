@@ -1,8 +1,18 @@
+var recaptchaErrorMessage = function(textCode) {
+  console.log('received text code: ' + textCode);
+  if (textCode === 'invalid-site-private-key') {
+    return "We weren't able to verify the private key.";
+  } else if (textCode === 'invalid-request-cookie') {
+    return 'The challenge parameter of the verify script was incorrect.';
+  } else if (textCode === 'incorrect-captcha-sol') {
+    return 'The CAPTCHA solution was incorrect.'
+  } else if (textCode === 'captcha-timeout') {
+    return 'The solution was received after the CAPTCHA timed out.';
+  }
+  return textCode;
+};
 
-// Use Parse.Cloud.define to define as many cloud functions as you want.
-// For example:
 Parse.Cloud.beforeSave("Captcha", function(request, response) {
-  console.log(request);
   Parse.Cloud.httpRequest({
     method: 'POST',
     url: 'http://www.google.com/recaptcha/api/verify',
@@ -13,17 +23,13 @@ Parse.Cloud.beforeSave("Captcha", function(request, response) {
       response: request.object.get('response')
     },
     success: function(httpResponse) {
-      console.log("success callback");
-      console.log(httpResponse.text);
       var lines = httpResponse.text.split("\n");
       if (lines.length > 0 && lines[0] == "true") {
         response.success();
         return;
       }
-      response.error(lines[1]);
+      response.error(recaptchaErrorMessage(lines[1]));
     }, error: function(httpResponse) {
-      console.log("failure callback");
-      console.log(httpResponse);
       response.error(httpResponse.text);
     }
   });
