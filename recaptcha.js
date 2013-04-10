@@ -4,7 +4,8 @@
 window.UT = {};
 
 UT = function() {
-  Parse.initialize("4mgZKN5Hnb8S6xNvEfSDRC062ka8qZIygSjDgpuI", "nXUyDw8w7wpS7Sx11UTYi4e4L5OCsm3Y3D3VvHov");
+  Parse.initialize("4mgZKN5Hnb8S6xNvEfSDRC062ka8qZIygSjDgpuI",
+                   "nXUyDw8w7wpS7Sx11UTYi4e4L5OCsm3Y3D3VvHov");
 
   var generateUuid = function() {
     var result = '';
@@ -14,11 +15,22 @@ UT = function() {
     return result
   };
 
+  // We generate a Universally Unique ID to mark a single "session" filling out
+  // captchas. Each time you manually refresh the page, this value gets reset.
   var uuid = generateUuid();
+
+  // Identifier = the name of the computer station they're working at.
   var identifier = '';
+
+  // We pass this to reCAPTCHA because they want to prevent bots from spamming
+  // their service.
   var IP = '';
+
+  // Tracks the number of times the user has successfully solved a captcha.
+  // Displayed on the page.
   var successCount = 0;
 
+  // Resets the captcha in between successful or failed solvings of the captcha.
   var setupRecaptcha = function() {
     $('#results_recaptchas').text(successCount);
     $('#results_tokens').text(Math.floor(successCount/5));
@@ -28,14 +40,16 @@ UT = function() {
     );
   };
 
-  var setIP = function(ip) {
-    IP = ip;
-    $('#submitComputer').show();
-    $('#ipDone').text(IP).show();
-    $('#ipLoading').hide();
-  };
-
+  // Set up the Javascript gating on the page. On success, exposes the computer
+  // information form.
   var init = function() {
+    var setIP = function(ip) {
+      IP = ip;
+      $('#submitComputer').show();
+      $('#ipDone').text(IP).show();
+      $('#ipLoading').hide();
+    };
+
     // Get IP address
     $.get('http://api.hostip.info/get_html.php', function(data) {
       var info = data.split('\n');
@@ -46,13 +60,17 @@ UT = function() {
         }
       });
     }).fail(function() {
-      setIP('4.6.051.02');
+      // Randomly generate an IP address so we can move on
+      var fakeIP = [];
+      for (var i = 0; i < 4; i++) {
+        fakeIp.push(Math.floor(Math.random() * 256))
+      }
+      setIP(fakeIp.join('.'));
     });
   };
 
-  // When a user clicks the "Set Computer" button, store that information and
-  // begin the reCAPTCHA process.
-
+  // Move past the "Computer Information" gate. Store the name of the computer
+  // we're working at and move on to the reCAPTCHA process.
   var submitComputerInfo = function() {
     identifier = $('input#computerInput').attr('value');
     if (identifier.length > 0) {
@@ -64,6 +82,9 @@ UT = function() {
     }
   };
 
+  // Actually submit the captcha to the server. On return, reset the captcha
+  // (either incrementing our "success" counter on success or displaying an
+  // error message on error).
   var submitCaptcha = function() {
     var Captcha = Parse.Object.extend("Captcha");
     var captcha = new Captcha();
@@ -92,10 +113,10 @@ UT = function() {
     return false;
   };
 
+  // HERE WE GO!
   // Kick off IP resolving + revealing of necessary components
   init();
 
-  // No public members
   return {
     submitComputerInfo: submitComputerInfo,
     submitCaptcha: submitCaptcha,
