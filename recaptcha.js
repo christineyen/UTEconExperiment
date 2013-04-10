@@ -5,13 +5,22 @@ window.UT = {};
 UT = function() {
   Parse.initialize("4mgZKN5Hnb8S6xNvEfSDRC062ka8qZIygSjDgpuI", "nXUyDw8w7wpS7Sx11UTYi4e4L5OCsm3Y3D3VvHov");
 
-  var self = this;
+  var generateUuid = function() {
+    var result = '';
+    for(var i=0; i<32; i++) {
+      result += Math.floor(Math.random()*16).toString(16).toUpperCase();
+    }
+    return result
+  };
+
+  var uuid = generateUuid();
   var identifier = '';
   var IP = '';
-  var attempt = 0;
+  var successCount = 0;
 
   var setupRecaptcha = function() {
-    $('#num_recaptchas').text('Correctly solved: ' + attempt);
+    $('#results_recaptchas').text(successCount);
+    $('#results_tokens').text(Math.floor(successCount/5));
     Recaptcha.create("6LcNpt8SAAAAAMf7duWh1n6EJToKcEEAA39sfcPU",
       "recaptcha_div",
       { callback: Recaptcha.focus_response_field }
@@ -56,22 +65,24 @@ UT = function() {
 
   var submitSuccess = function(object) {
     Recaptcha.destroy();
-    attempt++;
+    successCount++;
     setupRecaptcha();
   };
 
   var submitError = function(object, error) {
-    // console.log(error.message);
+    $('#flash_error').text(error.message);
+    $('#flash').fadeIn().delay(3000).fadeOut();
     Recaptcha.destroy();
+    setupRecaptcha();
   };
 
   $('input#submitButton').click(function() {
     var Captcha = Parse.Object.extend("Captcha");
     var captcha = new Captcha();
     captcha.save({
+        uuid: uuid,
         identifier: identifier,
         ip: IP,
-        attempt: attempt,
         challenge: Recaptcha.get_challenge(),
         response: Recaptcha.get_response()
       }, {
@@ -86,10 +97,7 @@ UT = function() {
 
   init();
 
-  return {
-    identifier: identifier,
-    IP: IP,
-    attempt: attempt,
-  }
+  // No public members
+  return { }
 }();
 
