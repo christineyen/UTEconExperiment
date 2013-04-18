@@ -33,10 +33,14 @@ UT = function() {
   // Displayed on the page.
   var successCount = 0;
 
-  // Resets the captcha in between successful or failed solvings of the captcha.
-  var setupRecaptcha = function() {
+  var refreshCountDisplay = function() {
     $('#results_recaptchas').text(successCount);
     $('#results_tokens').text(Math.floor(successCount/5));
+  };
+
+  // Resets the captcha in between successful or failed solvings of the captcha.
+  var setupRecaptcha = function() {
+    refreshCountDisplay();
     Recaptcha.create("6LcNpt8SAAAAAMf7duWh1n6EJToKcEEAA39sfcPU",
       "recaptcha_div",
       { callback: Recaptcha.focus_response_field }
@@ -84,6 +88,16 @@ UT = function() {
       $('#computerInfo').show();
       $('#content').show();
       setupRecaptcha();
+
+      // JUST IN CASE the user has already done some in this session/computer,
+      // we should display the correct # of captchas done.
+      var query = new Parse.Query("Captcha");
+      query.equalTo("identifier", identifier);
+      query.equalTo("sessionNum", sessionNum);
+      query.count().then(function(count) {
+        successCount = count;
+        refreshCountDisplay();
+      }); // ignore on error
     }
   };
 
