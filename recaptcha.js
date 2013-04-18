@@ -144,7 +144,7 @@ UT = function() {
     }
     Parse.Cloud.run('Export', params, {
       success: function(csv) {
-        var uriContent = "data:application/csv;charset=utf-8," + encodeURIComponent(csv);
+        var uriContent = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
         window.location = uriContent;
       }, error: function(error) {
         $('#flash_error').text(error.message).fadeIn().delay(3000).fadeOut();
