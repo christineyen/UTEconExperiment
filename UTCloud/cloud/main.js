@@ -35,23 +35,38 @@ Parse.Cloud.beforeSave("Captcha", function(request, response) {
   });
 });
 
+var resultsToCSV = function(results, csv) {
+  var row = ['sessionNum', 'identifier', 'number of captchas'];
+  var csv = [ row.join(',') ];
+  if (results.length == 0) {
+    csv.push("No data yet");
+    return csv;
+  }
+
+  var dict = {};
+  for (var i = 0; i < results.length; i++) {
+    var result = results[i];
+    var key = [result.get('sessionNum'), result.get('identifier')];
+    key = key.join(',');
+    if (dict[key] === undefined) {
+      dict[key] = 0;
+    }
+    dict[key]++;
+  }
+
+  for (key in dict) {
+    csv.push([key, dict[key]].join(','));
+  }
+  return csv;
+};
+
 Parse.Cloud.define("Export", function(request, response) {
   var query = new Parse.Query("Captcha");
   query.equalTo("identifier", request.params.identifier);
   query.equalTo("sessionNum", request.params.sessionNum);
+  query.limit(1000); // just in case
   query.find().then(function(results) {
-    var row = ['sessionNum', 'identifier', 'number of captchas'];
-    var csv = [ row.join(',') ];
-    if (results.length > 0) {
-      var row = [];
-      row.push(results[0].get('sessionNum'));
-      row.push(results[0].get('identifier'));
-      row.push(results.length);
-      csv.push(row.join(','));
-    } else {
-      csv.push("No data yet");
-    }
-    response.success(csv.join("\n"));
+    response.success(resultsToCSV(results).join("\n"));
   }, function(error) {
     response.error(error);
   });

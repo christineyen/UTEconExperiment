@@ -121,13 +121,19 @@ UT = function() {
 
   // Call Cloud Code function to export this session's data
   var exportData = function() {
-    Parse.Cloud.run('Export', {
+    var params = {
       identifier: identifier,
       sessionNum: sessionNum
-    }, {
+    };
+    if (window.admin) {
+      params = {};
+    }
+    Parse.Cloud.run('Export', params, {
       success: function(csv) {
         var uriContent = "data:application/csv;charset=utf-8," + encodeURIComponent(csv);
         window.location = uriContent;
+      }, error: function(error) {
+        $('#flash_error').text(error.message).fadeIn().delay(3000).fadeOut();
       }
     });
     return false;
@@ -141,6 +147,6 @@ UT = function() {
     submitComputerInfo: submitComputerInfo,
     submitCaptcha: submitCaptcha,
     exportData: exportData,
-  }
+  };
 }();
 
