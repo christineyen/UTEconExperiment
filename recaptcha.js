@@ -119,6 +119,20 @@ UT = function() {
     return false;
   };
 
+  // Call Cloud Code function to export this session's data
+  var exportData = function() {
+    Parse.Cloud.run('Export', {
+      identifier: identifier,
+      sessionNum: sessionNum
+    }, {
+      success: function(csv) {
+        var uriContent = "data:application/csv;charset=utf-8," + encodeURIComponent(csv);
+        window.location = uriContent;
+      }
+    });
+    return false;
+  };
+
   // HERE WE GO!
   // Kick off IP resolving + revealing of necessary components
   init();
@@ -126,6 +140,7 @@ UT = function() {
   return {
     submitComputerInfo: submitComputerInfo,
     submitCaptcha: submitCaptcha,
+    exportData: exportData,
   }
 }();
 

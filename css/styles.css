@@ -15,6 +15,9 @@ body {
 #ipInfo span {
   font-weight: normal;
 }
+#exportButton {
+  width: 75%;
+}
 
 #computerInfo, #submitComputer, #content, #content img {
   display: none;

@@ -34,3 +34,25 @@ Parse.Cloud.beforeSave("Captcha", function(request, response) {
     }
   });
 });
+
+Parse.Cloud.define("Export", function(request, response) {
+  var query = new Parse.Query("Captcha");
+  query.equalTo("identifier", request.params.identifier);
+  query.equalTo("sessionNum", request.params.sessionNum);
+  query.find().then(function(results) {
+    var row = ['sessionNum', 'identifier', 'number of captchas'];
+    var csv = [ row.join(',') ];
+    if (results.length > 0) {
+      var row = [];
+      row.push(results[0].get('sessionNum'));
+      row.push(results[0].get('identifier'));
+      row.push(results.length);
+      csv.push(row.join(','));
+    } else {
+      csv.push("No data yet");
+    }
+    response.success(csv.join("\n"));
+  }, function(error) {
+    response.error(error);
+  });
+});

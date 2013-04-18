@@ -38,6 +38,8 @@
       <div id="results" class="span4">
         <p>Correctly solved: <span id="results_recaptchas">0</span></p>
         <p>Tokens earned: <span id="results_tokens">0</span></p>
+        <p>&nbsp;</p>
+        <input type="button" id="exportButton" class="btn btn-warning btn-large" value="Export" />
       </div>
 
       <div class="span8">
@@ -62,6 +64,7 @@
     $('form#recaptcha_form').submit(UT.submitCaptcha);
     $('input#submitComputer').click(UT.submitComputerInfo);
     $('input#submitButton').click(UT.submitCaptcha);
+    $('input#exportButton').click(UT.exportData);
   </script>
 </body>
 
