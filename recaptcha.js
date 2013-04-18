@@ -22,6 +22,9 @@ UT = function() {
   // Identifier = the name of the computer station they're working at.
   var identifier = '';
 
+  // Session Number = the number of the session
+  var sessionNum = 0;
+
   // We pass this to reCAPTCHA because they want to prevent bots from spamming
   // their service.
   var IP = '';
@@ -73,6 +76,8 @@ UT = function() {
   // we're working at and move on to the reCAPTCHA process.
   var submitComputerInfo = function() {
     identifier = $('input#computerInput').attr('value');
+    var sessionInput = $('input#sessionInput').attr('value');
+    sessionNum = $.isNumeric(sessionInput) ? parseInt(sessionInput) : 0;
     if (identifier.length > 0) {
       $('#computerSetup').hide();
       $('#computerInfo').children('h1').text("Using Computer: " + identifier);
@@ -93,6 +98,7 @@ UT = function() {
     captcha.save({
         uuid: uuid,
         identifier: identifier,
+        sessionNum: sessionNum,
         ip: IP,
         challenge: Recaptcha.get_challenge(),
         response: Recaptcha.get_response()
