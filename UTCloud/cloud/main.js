@@ -1,3 +1,5 @@
+var _ = require('underscore'); // Utility library: see underscorejs.org
+
 var recaptchaErrorMessage = function(textCode) {
   console.log('received text code: ' + textCode);
   if (textCode === 'invalid-site-private-key') {
@@ -35,15 +37,7 @@ Parse.Cloud.beforeSave("Captcha", function(request, response) {
   });
 });
 
-var resultsToCSV = function(results, csv) {
-  var row = ['sessionNum', 'identifier', 'number of captchas'];
-  var csv = [ row.join(',') ];
-  if (results.length == 0) {
-    csv.push("No data yet");
-    return csv;
-  }
-
-  var dict = {};
+var addResultsToDict = function(results, dict) {
   for (var i = 0; i < results.length; i++) {
     var result = results[i];
     var key = [result.get('sessionNum'), result.get('identifier')];
@@ -53,6 +47,16 @@ var resultsToCSV = function(results, csv) {
     }
     dict[key]++;
   }
+  return dict;
+};
+
+var dictToCSV = function(dict) {
+  var row = ['sessionNum', 'identifier', 'number of captchas'];
+  var csv = [ row.join(',') ];
+  if (_.isEmpty(dict)) {
+    csv.push("No data yet");
+    return csv;
+  }
 
   for (key in dict) {
     csv.push([key, dict[key]].join(','));
@@ -60,14 +64,25 @@ var resultsToCSV = function(results, csv) {
   return csv;
 };
 
+var fetchResults = function(query, collated, skip, response) {
+  query.skip(skip); // reset "skip" to fetch the next page of results
+  query.find().then(function(results) {
+    collated = addResultsToDict(results, collated);
+    if (results.length < 1000) {
+      response.success(dictToCSV(collated).join("\n"));
+    } else {
+      fetchResults(query, collated, skip + 1000, response);
+    }
+  }, function(error) {
+    response.error(error);
+  });
+};
+
 Parse.Cloud.define("Export", function(request, response) {
   var query = new Parse.Query("Captcha");
   query.equalTo("identifier", request.params.identifier);
   query.equalTo("sessionNum", request.params.sessionNum);
-  query.limit(1000); // just in case
-  query.find().then(function(results) {
-    response.success(resultsToCSV(results).join("\n"));
-  }, function(error) {
-    response.error(error);
-  });
+  query.limit(1000); // maximum # of results per query
+
+  fetchResults(query, {}, 0, response);
 });
