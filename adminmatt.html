@@ -17,13 +17,19 @@
     <p>Export a CSV of session number, identifier, and # of Captchas completed.</p>
     <p>&nbsp;</p>
     <p>
+      Enter a session number:
+      <input type="text" id="adminSession" />
+    </p>
+    <p>
       <input type="button" id="adminExportButton" class="btn btn-block btn-warning btn-large" value="Export It All" />
     </p>
     <div id="flash_error" class="alert alert-error"></div>
     <script type="text/javascript" src="recaptcha.js"></script>
     <script type="text/javascript">
       window.admin = true;
-      $('input#adminExportButton').click(UT.exportData);
+      $('input#adminExportButton').click(function() {
+        UT.exportData($('#adminSession').val());
+      });
     </script>
   </div>
 </body>

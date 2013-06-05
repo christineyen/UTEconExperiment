@@ -134,13 +134,16 @@ UT = function() {
   };
 
   // Call Cloud Code function to export this session's data
-  var exportData = function() {
+  var exportData = function(sessionStr) {
     var params = {
       identifier: identifier,
       sessionNum: sessionNum
     };
     if (window.admin) {
       params = {};
+      if (sessionStr.length > 0) {
+        params['sessionNum'] = parseInt(sessionStr);
+      }
     }
     Parse.Cloud.run('Export', params, {
       success: function(csv) {
